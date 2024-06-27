@@ -1,0 +1,17 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t patryk-krawiec/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true patryk-krawiec/react-test npm test
+
+after_success:
+  - docker build -t patryk-krawiec/multi-client ./client
+  - docker build -t patryk-krawiec/multi-nginx ./nginx
+  - docker build -t patryk-krawiec/multi-server ./server
+  - docker build -t patryk-krawiec/multi-worker ./worker
